@@ -1,0 +1,30 @@
+
+
+
+
+/*adjacent sibling selector (+)*/
+/*The adjacent sibling selector selects all elements that are the adjacent siblings of a specified element.
+Sibling elements must have the same parent element, and "adjacent" means "immediately following".
+The following example selects all <span> elements that are placed immediately after <div> elements:*/
+div + span {
+  color: green;
+}
+
+/*The general sibling selector selects all elements that are siblings of a specified element.
+The following example selects all <span> elements that are siblings of <div> elements
+It does not care whther the sibling elemtn if immediately following or not unlike the adjacent sibling selector +*/
+div ~ span {
+  background-color: yellow;
+}
+
+/*descendant selector (space)*/
+/*selects all <span> elements inside <div> elements irrespective of the depth or level*/
+div span {
+  color: red;
+}
+
+/*child selector (>)*/
+/* selects all <span> elements that are children of a <div> element*/
+div > span {
+  color: blue;
+}

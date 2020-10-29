@@ -1,0 +1,16 @@
+
+/*banded-rows*/
+tr:nth-child(even){
+  background-color: antiquewhite;
+}
+
+input {
+  float: right;
+  display: block;
+  color: black;
+  text-align: center;
+  padding: 12px 14px;
+  font: 17px bold;
+  border: 1px solid grey;
+  background: #f1f1f1;
+}

@@ -1,0 +1,43 @@
+
+<div class="container p-3 my-3 border">
+  <div class="table-responsive">
+    <input type="text" [(ngModel)]="searchText" placeholder="enter search text here">
+    <!--  <table class="table table-striped table-bordered table-hover">-->
+    <table class="table table-bordered table-hover table-sm" >
+      <thead class="thead-light">
+      <tr>
+        <th>Product Id</th>
+        <th>Category</th>
+        <th>Amount</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let x of rows | search: searchText; index as productId">
+        <td>{{x.productId}}</td>
+        <td [routerLink]="['/products',productId]">{{x.category}}</td>
+        <td>{{x.amount}}</td>
+      </tr>
+      </tbody>
+    </table>
+
+    <!--[...dataList,..filteredList]-->
+    <!--<input [(ngModel)]="" ) />-->
+    <br />
+
+    <app-product-detail [productList]="dataList"></app-product-detail>
+  </div>
+</div>
+
+<pagination *ngIf="config.paging"
+            class="pagination-sm"
+            [(ngModel)]="page"
+            [totalItems]="length"
+            [itemsPerPage]="itemsPerPage"
+            [maxSize]="maxSize"
+            [boundaryLinks]="true"
+            [rotate]="false"
+            (pageChanged)="onChangeTable(config, $event)"
+            (numPages)="numPages = $event">
+</pagination>
+<pre *ngIf="config.paging" class="card card-block card-header">Page: {{page}} / {{numPages}}</pre>
+

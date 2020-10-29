@@ -1,0 +1,64 @@
+{
+"dt": [
+  {
+    "productId":1,
+    "category": "movie",
+    "amount": 30
+  },
+  {
+    "productId": 2,
+    "category": "abc",
+    "amount": 20
+  },
+  {
+    "productId": 3,
+    "category": "def",
+    "amount": 100
+  },
+  {
+    "productId":4,
+    "category": "ghi",
+    "amount": 30
+  },
+  {
+    "productId": 5,
+    "category": "jkl",
+    "amount": 202
+  },
+  {
+    "productId": 6,
+    "category": "foo",
+    "amount": 10
+  },
+  {
+    "productId":7,
+    "category": "movie",
+    "amount": 30
+  },
+  {
+    "productId": 8,
+    "category": "abc",
+    "amount": 20
+  },
+  {
+    "productId": 9,
+    "category": "foo",
+    "amount": 100
+  },
+  {
+    "productId":10,
+    "category": "movie",
+    "amount": 30
+  },
+  {
+    "productId": 11,
+    "category": "abc",
+    "amount": 200
+  },
+  {
+    "productId": 12,
+    "category": "food",
+    "amount": 10
+  }
+]
+}
