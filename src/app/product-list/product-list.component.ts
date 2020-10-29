@@ -13,13 +13,14 @@ export class ProductListComponent implements OnInit {
 
   public rows: Array<any> = [];
   public columns: Array<any> = [
-    {title: 'Product Id', name: 'productId', filtering: {filterString: '', placeholder: 'Filter by Product Id'}},
-    {title: 'Category', name: 'category', filtering: {filterString: '', placeholder: 'Filter by Category'}},
-    {title: 'Amount', name: 'amount', filtering: {filterString: '', placeholder: 'Filter by Amount'}},
+    {title: 'Product Id', name: 'productId', filtering: {filterString: '', placeholder: 'Filter by Product Id'}, sort: false},
+    {title: 'Category', name: 'category', filtering: {filterString: '', placeholder: 'Filter by Category'}, sort: ''},
+    {title: 'Amount', name: 'amount', filtering: {filterString: '', placeholder: 'Filter by Amount'}, sort: 'desc'},
+    // {title: 'Amount', name: 'amount', filtering: {filterString: '', placeholder: 'Filter by Amount'}, sort: 'asc'},
 ];
 
   public page = 1;
-  public itemsPerPage = 3;
+  public itemsPerPage = 4;
   public maxSize = 3;
   public numPages = 1;
   public length = 0;
@@ -27,6 +28,7 @@ export class ProductListComponent implements OnInit {
   public config: any = {
     paging: true,
     filtering: {filterString: ''},
+    sorting: {columns: this.columns},
     className: ['table-striped', 'table-bordered', 'table-hover', 'table-sm']
   };
 
@@ -39,6 +41,7 @@ export class ProductListComponent implements OnInit {
     // this.onChangeTable(this.config);
   }
 
+  // get data from App Service
   getData() {
     this.appService.getDataService().subscribe(
       (item) => {
@@ -49,12 +52,14 @@ export class ProductListComponent implements OnInit {
     );
   }
 
+  // calculating start & end page on clicking on a page number
   public changePage(page: any, data: Array<any>): Array<any> {
     const start = (page.page - 1) * page.itemsPerPage;
     const end = page.itemsPerPage > -1 ? (start + page.itemsPerPage) : data.length;
     return data.slice(start, end);
   }
 
+  // filter data based on filter string
   public changeFilter(data: any, config: any): any {
     let filteredData: Array<any> = data;
     this.columns.forEach((column: any) => {
@@ -90,13 +95,51 @@ export class ProductListComponent implements OnInit {
     return filteredData;
   }
 
+  // sort data
+  public changeSort(data: any, config: any): any {
+    if (!config.sorting) {
+      return data;
+    }
+
+    const columns = this.config.sorting.columns || [];
+    let columnName: string = void 0;
+    let sort: string = void 0;
+
+    for (let i = 0; i < columns.length; i++) {
+      if (columns[i].sort !== '' && columns[i].sort !== false) {
+        columnName = columns[i].name;
+        sort = columns[i].sort;
+      }
+    }
+
+    if (!columnName) {
+      return data;
+    }
+
+    // simple sorting
+    return data.sort((previous: any, current: any) => {
+      if (previous[columnName] > current[columnName]) {
+        return sort === 'desc' ? -1 : 1;
+      } else if (previous[columnName] < current[columnName]) {
+        return sort === 'asc' ? -1 : 1;
+      }
+      return 0;
+    });
+  }
+
   public onChangeTable(config: any, page: any = {page: this.page, itemsPerPage: this.itemsPerPage}): any {
     if (config.filtering) {
       Object.assign(this.config.filtering, config.filtering);
     }
+
+    if (config.sorting) {
+      Object.assign(this.config.sorting, config.sorting);
+    }
+
     let filteredData = this.changeFilter(this.dataList, this.config);
-    this.rows = page && config.paging ? this.changePage(page, filteredData) : filteredData;
-    this.length = filteredData.length;
+    let sortedData = this.changeSort(filteredData, this.config);
+    this.rows = page && config.paging ? this.changePage(page, sortedData) : sortedData;
+    this.length = sortedData.length;
   }
 
   public onCellClick(data: any): any {
