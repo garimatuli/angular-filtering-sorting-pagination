@@ -13,10 +13,13 @@ export class ProductListComponent implements OnInit {
 
   public rows: Array<any> = [];
   public columns: Array<any> = [
-    {title: 'Product Id', name: 'productId', filtering: {filterString: '', placeholder: 'Filter by Product Id'}, sort: false},
+    // tslint:disable-next-line:max-line-length
+    {title: 'Product Id', name: 'productId', filtering: {filterString: '', placeholder: 'Filter by Product Id'}, sort: 'desc', className: ['office-header', 'text-success']},
     {title: 'Category', name: 'category', filtering: {filterString: '', placeholder: 'Filter by Category'}, sort: ''},
-    {title: 'Amount', name: 'amount', filtering: {filterString: '', placeholder: 'Filter by Amount'}, sort: 'desc'},
+    // tslint:disable-next-line:max-line-length
+    {title: 'Amount', name: 'amount', filtering: {filterString: '', placeholder: 'Filter by Amount'}, sort: 'asc', className: 'text-warning'},
     // {title: 'Amount', name: 'amount', filtering: {filterString: '', placeholder: 'Filter by Amount'}, sort: 'asc'},
+    // {title: 'Amount', name: 'amount', filtering: {filterString: '', placeholder: 'Filter by Amount'}, sort: false},
 ];
 
   public page = 1;
@@ -59,7 +62,7 @@ export class ProductListComponent implements OnInit {
     return data.slice(start, end);
   }
 
-  // filter data based on filter string
+  // filter data based on particular columns
   public changeFilter(data: any, config: any): any {
     let filteredData: Array<any> = data;
     this.columns.forEach((column: any) => {
@@ -79,6 +82,7 @@ export class ProductListComponent implements OnInit {
         item[config.filtering.columnName].match(this.config.filtering.filterString));
     }
 
+    // filter data based on all columns
     const tempArray: Array<any> = [];
     filteredData.forEach((item: any) => {
       let flag = false;
@@ -117,13 +121,18 @@ export class ProductListComponent implements OnInit {
     }
 
     // simple sorting
+    /*   if previous > current and sort = desc then -1 ie previous should come first than current
+         if previous > current and sort = asc then 1 ie current should come first than previous
+         if previous < current and sort = asc then -1 ie previous should come first than current
+         if previous < current and sort = desc then 1 ie current should come first than previous
+    */
     return data.sort((previous: any, current: any) => {
       if (previous[columnName] > current[columnName]) {
         return sort === 'desc' ? -1 : 1;
       } else if (previous[columnName] < current[columnName]) {
         return sort === 'asc' ? -1 : 1;
       }
-      return 0;
+      return 0; // indicates that previous & current must be equal
     });
   }
 
@@ -136,8 +145,8 @@ export class ProductListComponent implements OnInit {
       Object.assign(this.config.sorting, config.sorting);
     }
 
-    let filteredData = this.changeFilter(this.dataList, this.config);
-    let sortedData = this.changeSort(filteredData, this.config);
+    const filteredData = this.changeFilter(this.dataList, this.config);
+    const sortedData = this.changeSort(filteredData, this.config);
     this.rows = page && config.paging ? this.changePage(page, sortedData) : sortedData;
     this.length = sortedData.length;
   }
