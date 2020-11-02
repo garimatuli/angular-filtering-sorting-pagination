@@ -9,17 +9,15 @@ import {AppService} from '../app.service';
 export class ProductListComponent implements OnInit {
   title = 'angularTry';
   dataList: any = [];
-  // searchText: any;
+  direction: number;
+  isDesc = false;
+  column = 'CategoryName';
 
   public rows: Array<any> = [];
   public columns: Array<any> = [
-    // tslint:disable-next-line:max-line-length
-    {title: 'Product Id', name: 'productId', filtering: {filterString: '', placeholder: 'Filter by Product Id'}, sort: 'desc', className: ['office-header', 'text-success']},
-    {title: 'Category', name: 'category', filtering: {filterString: '', placeholder: 'Filter by Category'}, sort: ''},
-    // tslint:disable-next-line:max-line-length
-    {title: 'Amount', name: 'amount', filtering: {filterString: '', placeholder: 'Filter by Amount'}, sort: 'asc', className: 'text-warning'},
-    // {title: 'Amount', name: 'amount', filtering: {filterString: '', placeholder: 'Filter by Amount'}, sort: 'asc'},
-    // {title: 'Amount', name: 'amount', filtering: {filterString: '', placeholder: 'Filter by Amount'}, sort: false},
+    {title: 'Product Id', name: 'productId'},
+    {title: 'Category', name: 'category', filtering: {filterString: '', placeholder: 'Filter by Category'}},
+    {title: 'Amount', name: 'amount', filtering: {filterString: '', placeholder: 'Filter by Amount'}},
 ];
 
   public page = 1;
@@ -30,7 +28,11 @@ export class ProductListComponent implements OnInit {
 
   public config: any = {
     paging: true,
-    filtering: {filterString: ''},
+    filtering: {
+      filterString: '',
+      category: { filterString: '' },
+      amount: { filterString: '' },
+    },
     sorting: {columns: this.columns},
     className: ['table-striped', 'table-bordered', 'table-hover', 'table-sm']
   };
@@ -41,7 +43,6 @@ export class ProductListComponent implements OnInit {
 
   ngOnInit() {
     this.getData();
-    // this.onChangeTable(this.config);
   }
 
   // get data from App Service
@@ -53,6 +54,13 @@ export class ProductListComponent implements OnInit {
         console.log(this.dataList);
       }
     );
+  }
+
+  // sort function
+  sort(property) {
+    this.isDesc = !this.isDesc; // change the direction
+    this.column = property;
+    this.direction = this.isDesc ? 1 : -1;
   }
 
   // calculating start & end page on clicking on a page number
@@ -68,7 +76,12 @@ export class ProductListComponent implements OnInit {
     this.columns.forEach((column: any) => {
       if (column.filtering) {
         filteredData = filteredData.filter((item: any) => {
-          return item[column.name].toString().match(column.filtering.filterString);
+          if (column.name === 'category') {
+            return item[column.name].toString().match(this.config.filtering.category.filterString);
+          }
+          if (column.name === 'amount') {
+            return item[column.name].toString().match(this.config.filtering.amount.filterString);
+          }
         });
       }
     });
@@ -99,43 +112,6 @@ export class ProductListComponent implements OnInit {
     return filteredData;
   }
 
-  // sort data
-  public changeSort(data: any, config: any): any {
-    if (!config.sorting) {
-      return data;
-    }
-
-    const columns = this.config.sorting.columns || [];
-    let columnName: string = void 0;
-    let sort: string = void 0;
-
-    for (let i = 0; i < columns.length; i++) {
-      if (columns[i].sort !== '' && columns[i].sort !== false) {
-        columnName = columns[i].name;
-        sort = columns[i].sort;
-      }
-    }
-
-    if (!columnName) {
-      return data;
-    }
-
-    // simple sorting
-    /*   if previous > current and sort = desc then -1 ie previous should come first than current
-         if previous > current and sort = asc then 1 ie current should come first than previous
-         if previous < current and sort = asc then -1 ie previous should come first than current
-         if previous < current and sort = desc then 1 ie current should come first than previous
-    */
-    return data.sort((previous: any, current: any) => {
-      if (previous[columnName] > current[columnName]) {
-        return sort === 'desc' ? -1 : 1;
-      } else if (previous[columnName] < current[columnName]) {
-        return sort === 'asc' ? -1 : 1;
-      }
-      return 0; // indicates that previous & current must be equal
-    });
-  }
-
   public onChangeTable(config: any, page: any = {page: this.page, itemsPerPage: this.itemsPerPage}): any {
     if (config.filtering) {
       Object.assign(this.config.filtering, config.filtering);
@@ -146,13 +122,9 @@ export class ProductListComponent implements OnInit {
     }
 
     const filteredData = this.changeFilter(this.dataList, this.config);
-    const sortedData = this.changeSort(filteredData, this.config);
-    this.rows = page && config.paging ? this.changePage(page, sortedData) : sortedData;
-    this.length = sortedData.length;
+    this.rows = page && config.paging ? this.changePage(page, filteredData) : filteredData;
+    this.length = filteredData.length;
   }
 
-  public onCellClick(data: any): any {
-    console.log('Clicked cell data: ', data);
-  }
 }
 

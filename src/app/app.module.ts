@@ -9,13 +9,15 @@ import { SearchPipe } from './search.pipe';
 import {FormsModule} from '@angular/forms';
 import {PaginationModule} from 'ngx-bootstrap/pagination';
 import {Ng2TableModule} from 'ng2-table';
+import { OrderByPipe } from './order-by.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
     ProductDetailComponent,
     ProductListComponent,
-    SearchPipe,
+    // SearchPipe, // for filter all columns
+    OrderByPipe, // for sorting table as per columns
   ],
   imports: [
     BrowserModule,

@@ -1,16 +1,25 @@
 
 /*banded-rows*/
 tr:nth-child(even){
-  background-color: antiquewhite;
+  background-color: white;
 }
 
 input {
-  float: right;
+  float: left;
   display: block;
   color: black;
   text-align: center;
-  padding: 12px 14px;
-  font: 17px bold;
+  padding: 8px 10px;
+  font: 14px bold;
   border: 1px solid grey;
-  background: #f1f1f1;
+  background: floralwhite;
 }
+
+th, thead>tr {
+  background-color: azure;
+}
+
+/*CSS class to change the mouse cursor in hand*/
+   .pointer{
+     cursor: pointer;
+   }
